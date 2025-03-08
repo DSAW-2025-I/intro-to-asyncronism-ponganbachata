@@ -81,40 +81,7 @@
         <h1 class="display-4 mb-4">Pokémon Database</h1>
         
         <div class="row">
-            <div class="col-lg-3 d-none d-lg-block">
-                <!-- Sidebar filters for desktop -->
-                <div class="list-group">
-                    <a href="#" class="list-group-item list-group-item-action" data-gen="1">Generation I</a>
-                    <a href="#" class="list-group-item list-group-item-action" data-gen="2">Generation II</a>
-                    <a href="#" class="list-group-item list-group-item-action" data-gen="3">Generation III</a>
-                    <a href="#" class="list-group-item list-group-item-action" data-gen="4">Generation IV</a>
-                    <a href="#" class="list-group-item list-group-item-action" data-gen="5">Generation V</a>
-                    <a href="#" class="list-group-item list-group-item-action" data-gen="6">Generation VI</a>
-                    <a href="#" class="list-group-item list-group-item-action" data-gen="7">Generation VII</a>
-                    <a href="#" class="list-group-item list-group-item-action" data-gen="8">Generation VIII</a>
-                </div>
-                <div class="list-group mt-3">
-                    <a href="#" class="list-group-item list-group-item-action" data-type="normal">Normal</a>
-                    <a href="#" class="list-group-item list-group-item-action" data-type="fire">Fire</a>
-                    <a href="#" class="list-group-item list-group-item-action" data-type="water">Water</a>
-                    <a href="#" class="list-group-item list-group-item-action" data-type="grass">Grass</a>
-                    <a href="#" class="list-group-item list-group-item-action" data-type="electric">Electric</a>
-                    <a href="#" class="list-group-item list-group-item-action" data-type="ice">Ice</a>
-                    <a href="#" class="list-group-item list-group-item-action" data-type="fighting">Fighting</a>
-                    <a href="#" class="list-group-item list-group-item-action" data-type="poison">Poison</a>
-                    <a href="#" class="list-group-item list-group-item-action" data-type="ground">Ground</a>
-                    <a href="#" class="list-group-item list-group-item-action" data-type="flying">Flying</a>
-                    <a href="#" class="list-group-item list-group-item-action" data-type="psychic">Psychic</a>
-                    <a href="#" class="list-group-item list-group-item-action" data-type="bug">Bug</a>
-                    <a href="#" class="list-group-item list-group-item-action" data-type="rock">Rock</a>
-                    <a href="#" class="list-group-item list-group-item-action" data-type="ghost">Ghost</a>
-                    <a href="#" class="list-group-item list-group-item-action" data-type="dragon">Dragon</a>
-                    <a href="#" class="list-group-item list-group-item-action" data-type="dark">Dark</a>
-                    <a href="#" class="list-group-item list-group-item-action" data-type="steel">Steel</a>
-                    <a href="#" class="list-group-item list-group-item-action" data-type="fairy">Fairy</a>
-                </div>
-            </div>
-            <div class="col-lg-9">
+            <div class="col-lg-12">
                 <!-- Filter button for mobile -->
                 <button class="btn btn-danger d-lg-none mb-3" type="button" data-bs-toggle="collapse" data-bs-target="#mobileFilters" aria-expanded="false" aria-controls="mobileFilters">
                     Filters
@@ -194,19 +161,19 @@
                             </button>
                         </li>
                         <li class="nav-item" role="presentation">
-                            <button class="nav-link" id="location-tab" data-bs-toggle="tab" data-bs-target="#location-content">
-                                Location
+                            <button class="nav-link" id="locations-tab" data-bs-toggle="tab" data-bs-target="#locations-content">
+                                Locations
                             </button>
                         </li>
                     </ul>
                     <div class="tab-content">
-                        <div class="tab-pane fade show active p-3" id="about-content">                        </div>
-                        <div class="tab-pane fade p-3" id="stats-content">                        </div>
+                        <div class="tab-pane fade show active p-3" id="about-content"></div>
+                        <div class="tab-pane fade p-3" id="stats-content"></div>
                         <div class="tab-pane fade p-3" id="forms-content">
                             <!-- Forms content will be inserted by JavaScript -->
                         </div>
-                        <div class="tab-pane fade p-3" id="location-content">
-                            <!-- Location content will be inserted by JavaScript -->
+                        <div class="tab-pane fade p-3" id="locations-content">
+                            <!-- Locations content will be inserted by JavaScript -->
                         </div>
                     </div>
                 </div>
