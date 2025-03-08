@@ -1,0 +1,666 @@
+.pokeball-icon {
+    display: inline-block;
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    background-color: #ffffff;
+    position: relative;
+    margin-right: 8px;
+}
+
+.pokeball-icon::before {
+    content: '';
+    position: absolute;
+    width: 100%;
+    height: 2px;
+    background-color: #dc3545;
+    top: 50%;
+    transform: translateY(-50%);
+}
+
+/* Menu toggle button for mobile */
+.menu-toggle {
+    display: none;
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    padding: 10px;
+}
+
+.menu-icon {
+    display: block;
+    width: 24px;
+    height: 2px;
+    background-color: #ffffff;
+    position: relative;
+}
+
+.menu-icon::before,
+.menu-icon::after {
+    content: '';
+    position: absolute;
+    width: 24px;
+    height: 2px;
+    background-color: #ffffff;
+    transition: all 0.3s ease;
+}
+
+.menu-icon::before {
+    top: -8px;
+}
+
+.menu-icon::after {
+    bottom: -8px;
+}
+
+/* Navigation menu */
+.nav-menu {
+    display: flex;
+    align-items: center;
+    flex-grow: 1;
+    justify-content: flex-end;
+}
+
+.nav-list {
+    display: flex;
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.nav-item {
+    position: relative;
+    margin-right: 20px;
+}
+
+/* Dropdown styling */
+.dropdown-toggle {
+    background: transparent;
+    border: none;
+    color: #ffffff;
+    cursor: pointer;
+    padding: 15px 10px;
+    font-size: 1rem;
+    display: flex;
+    align-items: center;
+}
+
+.dropdown-toggle::after {
+    content: '';
+    display: inline-block;
+    margin-left: 8px;
+    border-top: 4px solid;
+    border-right: 4px solid transparent;
+    border-left: 4px solid transparent;
+}
+
+.dropdown-menu {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    background-color: rgba(255, 255, 255, 0.1);
+    min-width: 180px;
+    border-radius: 4px;
+    padding: 8px 0;
+    list-style: none;
+    display: none;
+    z-index: 10;
+    border: none;
+    box-shadow: none;
+}
+
+.dropdown-menu a {
+    display: block;
+    padding: 8px 16px;
+    text-decoration: none;
+    color: #333;
+}
+
+.dropdown-menu a:hover {
+    background-color: #f8f9fa;
+}
+
+.nav-item:hover .dropdown-menu {
+    display: block;
+}
+
+/* Search box styling */
+.search-container {
+    display: flex;
+    margin-left: 20px;
+}
+
+.search-container input {
+    padding: 8px 12px;
+    border: none;
+    border-radius: 4px 0 0 4px;
+    outline: none;
+}
+
+.search-container button {
+    background-color: #ffffff;
+    border: none;
+    border-radius: 0 4px 4px 0;
+    padding: 0 12px;
+    cursor: pointer;
+}
+
+/* Small screens (576px and up) */
+@media (min-width: 576px) {
+    body { padding: 20px; }
+    h1.display-4 { font-size: 2.5rem; }
+    .modal-dialog { 
+        margin: 1rem auto;
+        max-width: 500px;
+    }
+    .card-body { padding: 1rem; }
+    
+    /* Move from separate media query */
+    .pokemon-card { max-width: 100%; }
+    .card-img-container { padding-top: 90%; }
+}
+
+/* Medium screens (768px and up) */
+@media (min-width: 768px) {
+    h1.display-4 { font-size: 3rem; }
+    
+    /* Typography improvements moved from separate query */
+    .description { line-height: var(--line-height-loose); }
+    .card-title { font-size: var(--font-scale-5); }
+    
+    /* Disclosure content fixes moved from separate query */
+    .disclosure-toggle { display: none; }
+    .expanded-content { display: block !important; }
+    .simplified-stats { display: none; }
+    
+    /* Responsive table styles consolidated from multiple queries */
+    .table-scroll-container::after { display: none; }
+    .table-to-cards { 
+        /* Reset card styling back to table */ 
+        display: table;
+        border: 1px solid #dee2e6;
+    }
+    .table-to-cards thead { display: table-header-group; }
+    .table-to-cards tr {
+        display: table-row;
+        margin-bottom: 0;
+        border-radius: 0;
+        box-shadow: none;
+    }
+    .table-to-cards td {
+        display: table-cell;
+        text-align: left;
+        padding: 0.75rem;
+        border: 1px solid #dee2e6;
+    }
+    .table-to-cards td::before { display: none; }
+    
+    .collapsible-row-table .row-details {
+        display: table-row;
+    }
+}
+
+/* Large screens (992px and up) */
+@media (min-width: 992px) {
+    .description { font-size: 1rem; }
+    .card-body { padding: 1.25rem; }
+    
+    /* Sticky sidebar */
+    .sticky-top {
+        top: 1rem;
+        z-index: 100;
+        max-height: calc(100vh - 2rem);
+        overflow-y: auto;
+    }
+    
+    /* Reset mobile filter styles */
+    .advanced-filters { 
+        display: block;
+        margin-top: 0;
+        padding-top: 0;
+        border-top: none;
+    }
+}
+
+/* Mobile-specific styles (under 576px) */
+@media (max-width: 575.98px) {
+    .pokemon-card {
+        max-width: 100%;
+        margin-left: auto;
+        margin-right: auto;
+        padding-top: 75%; /* Adjust aspect ratio for smaller screens */
+    }
+    .card-img-container { padding-top: 75%; }
+    
+    /* Tabs optimization */
+    #pokemonDetailsTabs .nav-link { padding: 0.75rem 0.25rem; }
+    #pokemonDetailsTabs .nav-link i { font-size: 1.25rem; }
+    .tab-content { padding: 1rem 0.5rem !important; }
+    
+    /* Table simplification */
+    .simplified-table th, 
+    .simplified-table td {
+        padding: 0.5rem 0.25rem;
+        font-size: 0.85rem;
+    }
+    .simplified-table .hide-xs { display: none; }
+    
+    /* Modal adjustments for smaller screens */
+    .modal-dialog {
+        margin: 1rem auto;
+        max-width: 100%;
+    }
+    .modal-body {
+        padding: 1rem;
+    }
+
+    .nav-tabs {
+        display: flex;
+        flex-direction: column;
+    }
+    .nav-tabs .nav-item {
+        width: 100%;
+    }
+    .nav-tabs .nav-link {
+        width: 100%;
+        text-align: left;
+    }
+
+    h1.display-4 {
+        font-size: 6vw; /* More adaptive heading */
+    }
+
+    .nav-link,
+    .btn {
+        min-height: 44px;
+        padding: 0.75rem;
+    }
+}
+
+/* Tablet-specific styles (under 768px) */
+@media (max-width: 767.98px) {
+    body { line-height: 1.4; }
+    p { margin-bottom: 0.75rem; }
+    .card-title { font-size: var(--font-scale-4); }
+    
+    /* Disclosure content */
+    .disclosure-content.collapsed {
+        max-height: 100px;
+        position: relative;
+    }
+    .disclosure-content.collapsed::after {
+        content: '';
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        height: 40px;
+        background: linear-gradient(to bottom, rgba(255,255,255,0), rgba(255,255,255,1));
+    }
+    .disclosure-toggle {
+        display: block;
+        width: 100%;
+        text-align: center;
+        padding: 0.5rem;
+        margin-top: 0.5rem;
+        background: none;
+        border: none;
+        color: #0d6efd;
+        font-weight: 500;
+    }
+    .expanded-content { display: none; }
+    .expanded-content.show { display: block; }
+    
+    /* Stats tables and cards */
+    .stats-table .stat-bar-cell { width: auto; }
+    .stats-card {
+        border-radius: 0.5rem;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        padding: 0.75rem;
+        margin-bottom: 0.5rem;
+        background-color: #fff;
+    }
+    
+    /* Table adaptations */
+    .table-scroll-container::after {
+        content: '';
+        position: absolute;
+        top: 0;
+        right: 0;
+        bottom: 0;
+        width: 5px;
+        background: linear-gradient(to left, rgba(0,0,0,0.05), transparent);
+        pointer-events: none;
+    }
+    
+    /* Collapsible table rows */
+    .collapsible-row-table tbody tr { cursor: pointer; }
+    .collapsible-row-table .row-details {
+        display: none;
+        border-top: 1px solid #f0f0f0;
+        padding: 0.75rem;
+        background-color: #f9f9f9;
+    }
+    .collapsible-row-table tr.expanded .row-details { display: block; }
+    .collapsible-row-table tr.expanded { border-left: 3px solid #0d6efd; }
+}
+
+/* Small devices and down (under 992px) */
+@media (max-width: 991.98px) {
+    /* Navbar adaptations - improved styling */
+    .navbar-collapse {
+        background-color: #dc3545;
+        padding: 1rem;
+        border-radius: 0 0 0.5rem 0.5rem;
+    /* Removed duplicate .dropdown-menu styles */
+        border: none;
+        box-shadow: none;
+    }
+    
+    .dropdown-item {
+        color: white;
+        border-radius: 0.25rem;
+        padding: 0.5rem 1rem;
+    }
+    
+    .dropdown-item:hover {
+        background-color: rgba(255, 255, 255, 0.2);
+        color: white;
+    }
+    
+    /* Advanced filters */
+    .advanced-filters { display: none; }
+    .advanced-filters.show {
+        display: block;
+        margin-top: 1rem;
+        padding-top: 1rem;
+        border-top: 1px solid #dee2e6;
+    }
+    .filter-section-title {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        width: 100%;
+        text-align: left;
+        padding: 0.5rem 0;
+        font-weight: 500;
+    }
+
+    .menu-toggle {
+        display: block;
+    }
+
+    .nav-menu {
+        flex-direction: column;
+        width: 100%;
+        height: 0;
+        overflow: hidden;
+        transition: height 0.3s ease;
+    }
+
+    .nav-menu.active {
+        height: auto;
+        padding-bottom: 15px;
+    }
+
+    .nav-list {
+        flex-direction: column;
+        width: 100%;
+    }
+
+    .nav-item {
+        width: 100%;
+        margin-right: 0;
+    }
+    
+    .dropdown-toggle {
+        width: 100%;
+        justify-content: space-between;
+        padding: 12px 0;
+    }
+    
+    .dropdown-menu {
+        position: static;
+        box-shadow: none;
+        background-color: rgba(255, 255, 255, 0.1);
+        padding: 0;
+        margin-left: 15px;
+        width: calc(100% - 15px);
+    }
+    
+    .dropdown-menu a {
+        color: #ffffff;
+        padding: 8px 10px;
+    }
+    
+    .dropdown-menu a:hover {
+        background-color: rgba(255, 255, 255, 0.2);
+    }
+    
+    .search-container {
+        width: 100%;
+        margin: 15px 0 0 0;
+    }
+    
+    .search-container input {
+        flex-grow: 1;
+    }
+}
+
+/* Feature-based media queries */
+@media (hover: hover) {
+    .pokemon-card:hover .card-img-top { transform: scale(1.1); }
+    .pokemon-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 20px rgba(0, 0, 0, 0.15);
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .pokemon-card { transition: none; }
+}
+
+@media (forced-colors: active) {
+    .type-badge { border: 1px solid; }
+}
+
+@font-face {
+    font-family: 'Pokemon Solid';
+    src: url('path/to/PokemonSolid.woff2') format('woff2');
+    /* Ensure legal usage permissions here */
+}
+
+@font-face {
+    font-family: 'Futura';
+    src: url('path/to/Futura.woff') format('woff');
+    /* Or include from a licensed source */
+}
+
+body {
+    background: #f7f7f7 url('https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/132.png') no-repeat 96% top;
+    background-size: 120px;
+    font-family: 'Futura', sans-serif;
+}
+
+/* Pokemon.com inspired styles */
+:root {
+    --pokemon-red: #e3350d;
+    --pokemon-blue: #30a7d7;
+    --pokemon-yellow: #ffcb05;
+    --pokemon-black: #1d1f24;
+    --pokemon-gray: #f2f2f2;
+}
+
+.navbar {
+    background-color: var(--pokemon-red) !important;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+}
+
+/* Pokemon type badges similar to official site */
+.type-badge {
+    display: inline-block;
+    border-radius: 3px;
+    padding: 2px 8px;
+    margin: 2px;
+    font-size: 0.8rem;
+    text-transform: uppercase;
+    color: white;
+    font-weight: bold;
+}
+
+.type-fire { background-color: #fd7d24; }
+.type-water { background-color: #4592c4; }
+.type-grass { background-color: #9bcc50; }
+.type-electric { background-color: #eed535; }
+.type-psychic { background-color: #f366b9; }
+.type-ice { background-color: #51c4e7; }
+
+.pokemon-card {
+    position: relative;
+    width: 100%;
+    padding-top: 100%; /* 1:1 Aspect Ratio */
+    overflow: hidden;
+    border: 2px solid #eee;
+    border-radius: 8px;
+    background-color: #fff;
+    transition: transform 0.2s ease;
+    background-blend-mode: multiply;
+}
+
+.pokemon-card:hover {
+    transform: translateY(-5px);
+}
+
+.pokemon-card .card-img-top {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.pokemon-card .card-body {
+    background-color: white;
+    border-radius: 0 0 10px 10px;
+}
+
+.pokemon-card .card-title {
+    font-family: 'Pokemon Solid', 'Futura', sans-serif;
+    color: var(--pokemon-black);
+    text-transform: capitalize;
+}
+
+/* Modal styling to match Pokemon.com */
+.modal-content {
+    border-radius: 10px;
+    border: none;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+}
+
+.modal-header {
+    background-color: var(--pokemon-red);
+    color: white;
+    border-radius: 10px 10px 0 0 !important;
+}
+
+.modal-title {
+    font-family: 'Pokemon Solid', 'Futura', sans-serif;
+    text-transform: capitalize;
+}
+
+.show-more {
+    max-height: 120px;
+    overflow: hidden;
+    position: relative;
+}
+.show-more::after {
+    content: "";
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    width: 100%;
+    height: 40px;
+    background: linear-gradient(to bottom, rgba(255,255,255,0), #fff);
+}
+.table-scroll {
+    width: 100%;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+}
+
+.btn-outline-light {
+    color: #fff;
+    border-color: #fff;
+}
+
+h1, h2, h3 {
+    font-family: 'Pokemon Solid', 'Futura', sans-serif;
+}
+
+.button-black {
+    background-color: #313131;
+    color: #fff;
+}
+.button-black:hover {
+    background-color: #282828;
+}
+.column-12 {
+    float: left;
+    margin-right: -100%;
+    width: 85.49%;
+}
+.push-1 {
+    margin-left: 7.2525%;
+}
+
+/* Pokemon Stats Bar Styling */
+.stats-container {
+    padding: 10px;
+    background-color: #f8f9fa;
+    border-radius: 8px;
+}
+
+.stat-row {
+    display: flex;
+    align-items: center;
+    margin-bottom: 12px;
+}
+
+.stat-label {
+    width: 120px;
+    font-weight: bold;
+    text-transform: capitalize;
+}
+
+.stat-value {
+    width: 40px;
+    text-align: right;
+    margin-right: 10px;
+    font-weight: bold;
+}
+
+.stat-bar-container {
+    flex-grow: 1;
+    height: 20px;
+    background-color: #e9ecef;
+    border-radius: 10px;
+    overflow: hidden;
+}
+
+.stat-bar {
+    height: 100%;
+    border-radius: 10px;
+    transition: width 0.5s ease-in-out;
+}
+
+/* Add animation for the stat bars */
+@keyframes stat-bar-fill {
+    from {
+        width: 0;
+    }
+}
+
+.stat-bar {
+    animation: stat-bar-fill 1s ease-out forwards;
+}
