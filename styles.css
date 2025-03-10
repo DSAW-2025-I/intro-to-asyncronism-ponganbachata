@@ -592,146 +592,6 @@ body .modal .modal-header,
     font-size: 1rem;
 }
 
-.form-types {
-    display: flex;
-    justify-content: center;
-    flex-wrap: wrap;
-    gap: 5px;
-    margin-top: 10px;
-}
-
-/* Form backgrounds based on primary type */
-.form-card[data-form-type="normal"] { background: linear-gradient(to bottom right, #A8A77A, #e8e7d6); }
-.form-card[data-form-type="fire"] { background: linear-gradient(to bottom right, #EE8130, #f8d3b9); }
-.form-card[data-form-type="water"] { background: linear-gradient(to bottom right, #6390F0, #d1d9fb); }
-.form-card[data-form-type="grass"] { background: linear-gradient(to bottom right, #7AC74C, #d6f1c5); }
-.form-card[data-form-type="electric"] { background: linear-gradient(to bottom right, #F7D02C, #fceeb5); }
-.form-card[data-form-type="ice"] { background: linear-gradient(to bottom right, #96D9D6, #e6f7f6); }
-.form-card[data-form-type="fighting"] { background: linear-gradient(to bottom right, #C22E28, #f0b5b3); }
-.form-card[data-form-type="poison"] { background: linear-gradient(to bottom right, #A33EA1, #e7c2e6); }
-.form-card[data-form-type="ground"] { background: linear-gradient(to bottom right, #E2BF65, #f7efd2); }
-.form-card[data-form-type="flying"] { background: linear-gradient(to bottom right, #A98FF3, #e6dffc); }
-.form-card[data-form-type="psychic"] { background: linear-gradient(to bottom right, #F95587, #fecbda); }
-.form-card[data-form-type="bug"] { background: linear-gradient(to bottom right, #A6B91A, #eaefae); }
-.form-card[data-form-type="rock"] { background: linear-gradient(to bottom right, #B6A136, #efe9be); }
-.form-card[data-form-type="ghost"] { background: linear-gradient(to bottom right, #735797, #d5cadf); }
-.form-card[data-form-type="dragon"] { background: linear-gradient(to bottom right, #6F35FC, #d2befb); }
-.form-card[data-form-type="dark"] { background: linear-gradient(to bottom right, #705746, #d5ccc5); }
-.form-card[data-form-type="steel"] { background: linear-gradient(to bottom right, #B7B7CE, #e8e8f0); }
-.form-card[data-form-type="fairy"] { background: linear-gradient(to bottom right, #D685AD, #f2d7e4); }
-
-/* Enhanced Form Cards Styling with consistent height and improved hover effects */
-.form-card {
-    border: 1px solid rgba(0, 0, 0, 0.1);
-    border-radius: 12px;
-    overflow: hidden;
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
-    height: 100%;
-    display: flex;
-    flex-direction: column;
-    box-shadow: 0 3px 8px rgba(0, 0, 0, 0.05);
-    margin-bottom: 16px;
-}
-
-.form-card:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 12px 20px rgba(0, 0, 0, 0.12);
-}
-
-.form-card-header {
-    padding: 16px;
-    background-color: rgba(255, 255, 255, 0.8);
-    border-bottom: 1px solid rgba(0, 0, 0, 0.1);
-    text-align: center;
-}
-
-.form-name {
-    margin: 0;
-    font-size: 1.1rem;
-    font-weight: 600;
-    color: #333;
-}
-
-.form-card-body {
-    flex-grow: 1;
-    padding: 16px;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-}
-
-.form-image-container {
-    width: 100%;
-    height: 140px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    margin-bottom: 16px;
-}
-
-.form-image {
-    max-width: 100%;
-    max-height: 100%;
-    object-fit: contain;
-    filter: drop-shadow(0 3px 5px rgba(0,0,0,0.2));
-    transition: transform 0.3s ease;
-}
-
-.form-card:hover .form-image {
-    transform: scale(1.05);
-}
-
-.modal-body #forms-content,
-.tab-content #forms-content,
-.tab-pane#forms #forms-content {
-    padding: 16px;
-}
-
-/* No forms message styling */
-.no-forms-message {
-    text-align: center;
-    padding: 32px 16px;
-    background-color: #f9f9fa;
-    border-radius: 10px;
-    color: #6c757d;
-    font-style: italic;
-}
-
-/* Forms toggle navigation */
-.forms-nav {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 8px;
-    margin-bottom: 16px;
-    justify-content: center;
-}
-
-.form-nav-item {
-    padding: 8px 16px;
-    background-color: #f1f1f1;
-    border-radius: 20px;
-    cursor: pointer;
-    transition: all 0.2s ease;
-    font-size: 0.9rem;
-    border: none;
-}
-
-.form-nav-item.active {
-    background-color: var(--pokemon-red);
-    color: white;
-}
-
-.form-nav-item:hover:not(.active) {
-    background-color: #e0e0e0;
-}
-
-/* Forms grid container */
-.forms-grid {
-    display: grid;
-    grid-template-columns: repeat(1, 1fr);
-    gap: 16px;
-}
-
 /* Enhanced Location Styling */
 .location-region {
     margin-bottom: 24px;
@@ -893,11 +753,6 @@ body .modal .modal-header,
     .card-body { padding: 1rem; }
     .pokemon-card { max-width: 100%; }
     .card-img-container { padding-top: 90%; }
-    
-    /* Forms grid adjustments */
-    .forms-grid {
-        grid-template-columns: repeat(2, 1fr);
-    }
 }
 
 /* Medium screens (768px and up) */
@@ -957,11 +812,6 @@ body .modal .modal-header,
         margin-top: 0;
         padding-top: 0;
         border-top: none;
-    }
-    
-    /* Forms grid adjustments */
-    .forms-grid {
-        grid-template-columns: repeat(3, 1fr);
     }
 }
 
@@ -1101,13 +951,6 @@ body .modal .modal-header,
         margin-bottom: 0.25rem;
     }
     .modal-title { font-size: 1.25rem; }
-    
-    /* Forms */
-    .form-card {
-        max-width: 250px;
-        margin-left: auto;
-        margin-right: auto;
-    }
 }
 
 /* Small devices and down (under 992px) */
