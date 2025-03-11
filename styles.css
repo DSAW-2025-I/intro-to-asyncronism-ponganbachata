@@ -98,14 +98,14 @@
     position: absolute;
     top: 100%;
     left: 0;
-    background-color: rgba(255, 255, 255, 0.1);
+    background-color: white;
     min-width: 180px;
     border-radius: 4px;
     padding: 8px 0;
     list-style: none;
     display: none;
     z-index: 10;
-    border: none;
+    border: black 1px solid;
     box-shadow: none;
 }
 
@@ -116,8 +116,16 @@
     color: #333;
 }
 
+.dropdown-menu li:nth-child(odd) {
+    background-color: #f0f0f0; 
+}
+
+.dropdown-menu li:nth-child(even) {
+    background-color: #ffffff;
+}
+
 .dropdown-menu a:hover {
-    background-color: #f8f9fa;
+    background-color: #a6a6a6;
 }
 
 .nav-item:hover .dropdown-menu {
@@ -209,7 +217,7 @@ body {
 .pokemon-card {
     position: relative;
     width: 100%;
-    padding-top: 100%; /* 1:1 Aspect Ratio */
+    padding-top: 25%; /* 1:1 Aspect Ratio */
     overflow: hidden;
     border: 3px solid; /* Unified border style */
     border-radius: 8px; /* Consistent border radius */
@@ -963,6 +971,15 @@ body .modal .modal-header,
         border: none;
         box-shadow: none;
     }
+
+    .dropdown-menu li:nth-child(odd) {
+        background-color: rgba(255, 255, 255, 0.1);
+    }
+
+    .dropdown-menu li:nth-child(even) {
+        background-color: transparent;
+    }
+
     .dropdown-item {
         color: white;
         border-radius: 0.25rem;
@@ -1021,6 +1038,7 @@ body .modal .modal-header,
         position: static;
         box-shadow: none;
         background-color: rgba(255, 255, 255, 0.1);
+        border: none;
         padding: 0;
         margin-left: 15px;
         width: calc(100% - 15px);
