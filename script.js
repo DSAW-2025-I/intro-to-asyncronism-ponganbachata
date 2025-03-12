@@ -1,6 +1,14 @@
+let offset = 0; // Initial offset for loading more Pokémon
+const limit = 18; // Number of Pokémon to load per request
+
+let currentFetchType = 'initial'; // Track the current fetch type
+let currentGeneration = ''; // Track the current generation
+let currentType = ''; // Track the current type
+
 document.getElementById('search-button').addEventListener('click', () => {
     const searchInput = document.getElementById('pokemon-search').value.trim().toLowerCase();
     if (searchInput) {
+        currentFetchType = 'search';
         fetchPokemonData(searchInput);
     }
 });
@@ -8,6 +16,9 @@ document.getElementById('search-button').addEventListener('click', () => {
 document.querySelectorAll('[data-gen]').forEach(item => {
     item.addEventListener('click', event => {
         const generation = event.target.getAttribute('data-gen');
+        currentFetchType = 'generation';
+        currentGeneration = generation;
+        offset = 0;
         fetchPokemonByGeneration(generation);
     });
 });
@@ -15,19 +26,22 @@ document.querySelectorAll('[data-gen]').forEach(item => {
 document.querySelectorAll('[data-type]').forEach(item => {
     item.addEventListener('click', event => {
         const type = event.target.getAttribute('data-type');
+        currentFetchType = 'type';
+        currentType = type;
+        offset = 0;
         fetchPokemonByType(type);
     });
 });
 
 document.addEventListener('DOMContentLoaded', () => {
-    // Load first 20 Pokémon on page load
     fetchInitialPokemon();
+    window.addEventListener('scroll', debounce(handleScroll, 200));
 });
 
 async function fetchInitialPokemon() {
     showLoading();
     try {
-        const response = await fetch('https://pokeapi.co/api/v2/pokemon?limit=20');
+        const response = await fetch(`https://pokeapi.co/api/v2/pokemon?limit=${limit}&offset=${offset}`);
         if (!response.ok) {
             throw new Error('Network response was not ok ' + response.statusText);
         }
@@ -45,6 +59,28 @@ async function fetchInitialPokemon() {
     } finally {
         hideLoading();
     }
+}
+
+function handleScroll() {
+    if ((window.innerHeight + window.scrollY) >= document.body.scrollHeight - 1 && currentFetchType != "search") {
+        console.log('Reached the bottom of the page!');
+        offset += limit;
+        if (currentFetchType === 'initial') {
+            fetchInitialPokemon();
+        } else if (currentFetchType === 'generation') {
+            fetchPokemonByGeneration(currentGeneration);
+        } else if (currentFetchType === 'type') {
+            fetchPokemonByType(currentType);
+        }
+    }
+}
+
+function debounce(func, wait) {
+    let timeout;
+    return function(...args) {
+        clearTimeout(timeout);
+        timeout = setTimeout(() => func.apply(this, args), wait);
+    };
 }
 
 async function fetchPokemonData(pokemon) {
@@ -73,7 +109,7 @@ async function fetchPokemonByGeneration(generation) {
         const data = await response.json();
         
         // Get first 20 Pokémon from this generation
-        const pokemonList = data.pokemon_species.slice(0, 20).map(species => species.name);
+        const pokemonList = data.pokemon_species.slice(offset, offset + limit).map(species => species.name);
         
         const pokemonDetailPromises = pokemonList.map(async (name) => {
             const detailResponse = await fetch(`https://pokeapi.co/api/v2/pokemon/${name}`);
@@ -100,7 +136,7 @@ async function fetchPokemonByType(type) {
         const data = await response.json();
         
         // Get first 20 Pokémon of this type
-        const pokemonList = data.pokemon.slice(0, 20).map(p => p.pokemon.name);
+        const pokemonList = data.pokemon.slice(offset, offset + limit).map(p => p.pokemon.name);
         
         const pokemonDetailPromises = pokemonList.map(async (name) => {
             const detailResponse = await fetch(`https://pokeapi.co/api/v2/pokemon/${name}`);
@@ -157,8 +193,8 @@ function getShapeBorderStyle(shape) {
 }
 
 async function displayPokemon(pokemonData) {
-    const container = document.getElementById('pokemon-container');
-    container.innerHTML = ''; // Clear previous content
+    const container = document.getElementById('pokemon-container');    
+    container.innerHTML = ''; // Clear previous content if not appending
     
     if (pokemonData.length === 0) {
         container.innerHTML = `
