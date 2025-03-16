@@ -5,12 +5,33 @@ let currentFetchType = 'initial'; // Track the current fetch type
 let currentGeneration = ''; // Track the current generation
 let currentType = ''; // Track the current type
 
-document.getElementById('search-button').addEventListener('click', () => {
-    const searchInput = document.getElementById('pokemon-search').value.trim().toLowerCase();
-    if (searchInput) {
+document.getElementById('search-form').addEventListener('submit', () => {
+    const searchInputElement = document.getElementById('pokemon-search');
+    const searchInputValue = searchInputElement.value.trim().toLowerCase();
+    if (searchInputValue) {
         currentFetchType = 'search';
-        fetchPokemonData(searchInput);
+        fetchPokemonData(searchInputValue);
+        searchInputElement.value = '';
+        if (window.innerWidth < 992) { // Check if the screen width is less than 992px (Bootstrap's lg breakpoint)
+            const navMenu = document.getElementById('navMenu');
+            const bsCollapse = new bootstrap.Collapse(navMenu, {
+                toggle: true
+            });
+            bsCollapse.hide();
+        }
     }
+});
+
+document.querySelectorAll('.dropdown-item').forEach(item => {
+    item.addEventListener('click', () => {
+        if (window.innerWidth < 992) { // Check if the screen width is less than 992px (Bootstrap's lg breakpoint)
+            const navMenu = document.getElementById('navMenu');
+            const bsCollapse = new bootstrap.Collapse(navMenu, {
+                toggle: true
+            });
+            bsCollapse.hide();
+        }
+    });
 });
 
 document.querySelector('.navbar-brand').addEventListener('click', () => {

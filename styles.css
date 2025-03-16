@@ -117,6 +117,17 @@ h1.display-4 { font-size: 2.5rem; }
     }
 }
 
+/* Pokemon search styiling */
+#search-button {
+    background-color: var(--pokemon-black);
+    color: var(--pokemon-gray);
+    
+    &:hover {
+        background-color: var(--pokemon-gray);
+        color: var(--pokemon-black);
+    }
+}
+
 /* Type badge (information) */
 .type-badge {
     display: inline-block;
@@ -228,13 +239,6 @@ h1, h2, h3 {
     font-family: 'Pokemon Solid', 'Futura', sans-serif;
 }
 
-.button-black {
-    background-color: #313131;
-    color: #fff;
-}
-.button-black:hover {
-    background-color: #282828;
-}
 .column-12 {
     float: left;
     margin-right: -100%;
