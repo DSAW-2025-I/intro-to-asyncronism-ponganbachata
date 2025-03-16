@@ -62,9 +62,9 @@
                         </ul>
                     </li>
                 </ul>
-                <form class="d-flex">
-                    <input class="form-control me-2" type="search" id="pokemon-search" placeholder="Search by name or ID" aria-label="Search">
-                    <button class="btn button-black" type="button" id="search-button" title="Search">
+                <form class="d-flex" id="search-form">
+                    <input class="form-control me-2" type="text" id="pokemon-search" placeholder="Search by name or ID" aria-label="Search">
+                    <button class="btn" type="submit" id="search-button" title="Search">
                         <i class="bi bi-search"></i>
                     </button>
                 </form>
@@ -76,43 +76,6 @@
         
         <div class="row">
             <div class="col-lg-12">
-                <button class="btn btn-danger d-lg-none mb-3" type="button" data-bs-toggle="collapse" data-bs-target="#mobileFilters" aria-expanded="false" aria-controls="mobileFilters">
-                    Filters
-                </button>
-                <div class="collapse d-lg-none" id="mobileFilters">
-                    <div class="card card-body">
-                        <div class="list-group">
-                            <a href="#" class="list-group-item list-group-item-action" data-gen="1">Generation I</a>
-                            <a href="#" class="list-group-item list-group-item-action" data-gen="2">Generation II</a>
-                            <a href="#" class="list-group-item list-group-item-action" data-gen="3">Generation III</a>
-                            <a href="#" class="list-group-item list-group-item-action" data-gen="4">Generation IV</a>
-                            <a href="#" class="list-group-item list-group-item-action" data-gen="5">Generation V</a>
-                            <a href="#" class="list-group-item list-group-item-action" data-gen="6">Generation VI</a>
-                            <a href="#" class="list-group-item list-group-item-action" data-gen="7">Generation VII</a>
-                            <a href="#" class="list-group-item list-group-item-action" data-gen="8">Generation VIII</a>
-                        </div>
-                        <div class="list-group mt-3">
-                            <a href="#" class="list-group-item list-group-item-action" data-type="normal">Normal</a>
-                            <a href="#" class="list-group-item list-group-item-action" data-type="fire">Fire</a>
-                            <a href="#" class="list-group-item list-group-item-action" data-type="water">Water</a>
-                            <a href="#" class="list-group-item list-group-item-action" data-type="grass">Grass</a>
-                            <a href="#" class="list-group-item list-group-item-action" data-type="electric">Electric</a>
-                            <a href="#" class="list-group-item list-group-item-action" data-type="ice">Ice</a>
-                            <a href="#" class="list-group-item list-group-item-action" data-type="fighting">Fighting</a>
-                            <a href="#" class="list-group-item list-group-item-action" data-type="poison">Poison</a>
-                            <a href="#" class="list-group-item list-group-item-action" data-type="ground">Ground</a>
-                            <a href="#" class="list-group-item list-group-item-action" data-type="flying">Flying</a>
-                            <a href="#" class="list-group-item list-group-item-action" data-type="psychic">Psychic</a>
-                            <a href="#" class="list-group-item list-group-item-action" data-type="bug">Bug</a>
-                            <a href="#" class="list-group-item list-group-item-action" data-type="rock">Rock</a>
-                            <a href="#" class="list-group-item list-group-item-action" data-type="ghost">Ghost</a>
-                            <a href="#" class="list-group-item list-group-item-action" data-type="dragon">Dragon</a>
-                            <a href="#" class="list-group-item list-group-item-action" data-type="dark">Dark</a>
-                            <a href="#" class="list-group-item list-group-item-action" data-type="steel">Steel</a>
-                            <a href="#" class="list-group-item list-group-item-action" data-type="fairy">Fairy</a>
-                        </div>
-                    </div>
-                </div>
                 <div class="row" id="pokemon-container">
                     <div class="col-12 text-center py-5">
                         <div class="spinner-border loading-spinner text-primary" role="status">
@@ -147,11 +110,6 @@
                             </button>
                         </li>
                         <li class="nav-item" role="presentation">
-                            <button class="nav-link" id="forms-tab" data-bs-toggle="tab" data-bs-target="#forms-content">
-                                Forms
-                            </button>
-                        </li>
-                        <li class="nav-item" role="presentation">
                             <button class="nav-link" id="locations-tab" data-bs-toggle="tab" data-bs-target="#locations-content">
                                 Locations
                             </button>
@@ -175,14 +133,10 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="tab-pane fade p-3" id="forms-content">
-                        </div>
+
                         <div class="tab-pane fade p-3" id="locations-content">
                         </div>
                     </div>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
                 </div>
             </div>
         </div>

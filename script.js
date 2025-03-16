@@ -1,13 +1,51 @@
-document.getElementById('search-button').addEventListener('click', () => {
-    const searchInput = document.getElementById('pokemon-search').value.trim().toLowerCase();
-    if (searchInput) {
-        fetchPokemonData(searchInput);
+let offset = 0; // Initial offset for loading more Pokémon
+const limit = 18; // Number of Pokémon to load per request
+
+let currentFetchType = 'initial'; // Track the current fetch type
+let currentGeneration = ''; // Track the current generation
+let currentType = ''; // Track the current type
+
+document.getElementById('search-form').addEventListener('submit', () => {
+    const searchInputElement = document.getElementById('pokemon-search');
+    const searchInputValue = searchInputElement.value.trim().toLowerCase();
+    if (searchInputValue) {
+        currentFetchType = 'search';
+        fetchPokemonData(searchInputValue);
+        searchInputElement.value = '';
+        if (window.innerWidth < 992) { // Check if the screen width is less than 992px (Bootstrap's lg breakpoint)
+            const navMenu = document.getElementById('navMenu');
+            const bsCollapse = new bootstrap.Collapse(navMenu, {
+                toggle: true
+            });
+            bsCollapse.hide();
+        }
     }
+});
+
+document.querySelectorAll('.dropdown-item').forEach(item => {
+    item.addEventListener('click', () => {
+        if (window.innerWidth < 992) { // Check if the screen width is less than 992px (Bootstrap's lg breakpoint)
+            const navMenu = document.getElementById('navMenu');
+            const bsCollapse = new bootstrap.Collapse(navMenu, {
+                toggle: true
+            });
+            bsCollapse.hide();
+        }
+    });
+});
+
+document.querySelector('.navbar-brand').addEventListener('click', () => {
+    currentFetchType = 'initial';
+    offset = 0;
+    fetchInitialPokemon();
 });
 
 document.querySelectorAll('[data-gen]').forEach(item => {
     item.addEventListener('click', event => {
         const generation = event.target.getAttribute('data-gen');
+        currentFetchType = 'generation';
+        currentGeneration = generation;
+        offset = 0;
         fetchPokemonByGeneration(generation);
     });
 });
@@ -15,19 +53,22 @@ document.querySelectorAll('[data-gen]').forEach(item => {
 document.querySelectorAll('[data-type]').forEach(item => {
     item.addEventListener('click', event => {
         const type = event.target.getAttribute('data-type');
+        currentFetchType = 'type';
+        currentType = type;
+        offset = 0;
         fetchPokemonByType(type);
     });
 });
 
 document.addEventListener('DOMContentLoaded', () => {
-    // Load first 20 Pokémon on page load
     fetchInitialPokemon();
+    window.addEventListener('scroll', debounce(handleScroll, 200));
 });
 
 async function fetchInitialPokemon() {
     showLoading();
     try {
-        const response = await fetch('https://pokeapi.co/api/v2/pokemon?limit=20');
+        const response = await fetch(`https://pokeapi.co/api/v2/pokemon?limit=${limit}&offset=${offset}`);
         if (!response.ok) {
             throw new Error('Network response was not ok ' + response.statusText);
         }
@@ -45,6 +86,28 @@ async function fetchInitialPokemon() {
     } finally {
         hideLoading();
     }
+}
+
+function handleScroll() {
+    if ((window.innerHeight + window.scrollY) >= document.body.scrollHeight - 1 && currentFetchType != "search") {
+        console.log('Reached the bottom of the page!');
+        offset += limit;
+        if (currentFetchType === 'initial') {
+            fetchInitialPokemon();
+        } else if (currentFetchType === 'generation') {
+            fetchPokemonByGeneration(currentGeneration);
+        } else if (currentFetchType === 'type') {
+            fetchPokemonByType(currentType);
+        }
+    }
+}
+
+function debounce(func, wait) {
+    let timeout;
+    return function(...args) {
+        clearTimeout(timeout);
+        timeout = setTimeout(() => func.apply(this, args), wait);
+    };
 }
 
 async function fetchPokemonData(pokemon) {
@@ -73,7 +136,7 @@ async function fetchPokemonByGeneration(generation) {
         const data = await response.json();
         
         // Get first 20 Pokémon from this generation
-        const pokemonList = data.pokemon_species.slice(0, 20).map(species => species.name);
+        const pokemonList = data.pokemon_species.slice(offset, offset + limit).map(species => species.name);
         
         const pokemonDetailPromises = pokemonList.map(async (name) => {
             const detailResponse = await fetch(`https://pokeapi.co/api/v2/pokemon/${name}`);
@@ -100,7 +163,7 @@ async function fetchPokemonByType(type) {
         const data = await response.json();
         
         // Get first 20 Pokémon of this type
-        const pokemonList = data.pokemon.slice(0, 20).map(p => p.pokemon.name);
+        const pokemonList = data.pokemon.slice(offset, offset + limit).map(p => p.pokemon.name);
         
         const pokemonDetailPromises = pokemonList.map(async (name) => {
             const detailResponse = await fetch(`https://pokeapi.co/api/v2/pokemon/${name}`);
@@ -157,8 +220,8 @@ function getShapeBorderStyle(shape) {
 }
 
 async function displayPokemon(pokemonData) {
-    const container = document.getElementById('pokemon-container');
-    container.innerHTML = ''; // Clear previous content
+    const container = document.getElementById('pokemon-container');    
+    container.innerHTML = ''; // Clear previous content if not appending
     
     if (pokemonData.length === 0) {
         container.innerHTML = `
@@ -233,9 +296,9 @@ async function showPokemonDetails(pokemon) {
         
         modal.show();
         
-        const [speciesData, habitatData, shapeData, formsData, locationsData] = await fetchAdditionalData(pokemon);
+        const [speciesData, habitatData, shapeData, locationsData] = await fetchAdditionalData(pokemon);
         
-        updateTabContents(pokemon, speciesData, habitatData, shapeData, formsData, locationsData);
+        updateTabContents(pokemon, speciesData, habitatData, shapeData, locationsData);
     } catch (error) {
         console.error('Error displaying Pokémon details:', error);
     }
@@ -244,7 +307,6 @@ async function showPokemonDetails(pokemon) {
 function setLoadingState() {
     document.getElementById('about-content').innerHTML = '<p>Loading...</p>';
     document.getElementById('stats-content').innerHTML = '<p>Loading...</p>';
-    document.getElementById('forms-content').innerHTML = '<p>Loading...</p>';
     document.getElementById('locations-content').innerHTML = '<p>Loading...</p>';
 }
 
@@ -252,7 +314,6 @@ async function fetchAdditionalData(pokemon) {
     let speciesData = {};
     let habitatData = {};
     let shapeData = {};
-    let formsData = [];
     let locationsData = [];
     
     try {
@@ -287,68 +348,6 @@ async function fetchAdditionalData(pokemon) {
     }
 
     try {
-        if (pokemon.forms.length > 0) {
-            const formsPromises = pokemon.forms.map(async (form) => {
-                const formRes = await fetch(form.url);
-                if (formRes.ok) {
-                    const formData = await formRes.json();
-                    
-                    if (formData.is_default) {
-                        return {
-                            ...formData,
-                            types: pokemon.types,
-                            sprites: pokemon.sprites,
-                            description: `This is the standard form of ${pokemon.name.charAt(0).toUpperCase() + pokemon.name.slice(1)}.`
-                        };
-                    }
-                    
-                    try {
-                        const pokemonFormRes = await fetch(`https://pokeapi.co/api/v2/pokemon/${formData.name}`);
-                        if (pokemonFormRes.ok) {
-                            const pokemonFormData = await pokemonFormRes.json();
-                            
-                            let description = `A special form of ${pokemon.name.charAt(0).toUpperCase() + pokemon.name.slice(1)}.`;
-                            
-                            const formName = formData.name.toLowerCase();
-                            if (formName.includes('alola')) {
-                                description = `The Alolan form of ${pokemon.name.charAt(0).toUpperCase() + pokemon.name.slice(1)}, adapted to the unique environment of the Alola region.`;
-                            } else if (formName.includes('galar')) {
-                                description = `The Galarian form of ${pokemon.name.charAt(0).toUpperCase() + pokemon.name.slice(1)}, adapted to the unique environment of the Galar region.`;
-                            } else if (formName.includes('hisui')) {
-                                description = `The ancient Hisuian form of ${pokemon.name.charAt(0).toUpperCase() + pokemon.name.slice(1)} from the Hisui region.`;
-                            } else if (formName.includes('mega')) {
-                                description = `The Mega Evolution of ${pokemon.name.charAt(0).toUpperCase() + pokemon.name.slice(1)}, achieved through Mega Stone and a strong bond with its trainer.`;
-                            } else if (formName.includes('gmax') || formName.includes('gigantamax')) {
-                                description = `The Gigantamax form of ${pokemon.name.charAt(0).toUpperCase() + pokemon.name.slice(1)}, with the power of Dynamax energy.`;
-                            }
-                            
-                            return {
-                                ...formData,
-                                types: pokemonFormData.types,
-                                sprites: pokemonFormData.sprites,
-                                description: description
-                            };
-                        }
-                    } catch (err) {
-                        console.error('Error fetching specific form data:', err);
-                    }
-                    
-                    return {
-                        ...formData,
-                        types: pokemon.types,
-                        sprites: pokemon.sprites,
-                        description: `An alternate form of ${pokemon.name.charAt(0).toUpperCase() + pokemon.name.slice(1)}.`
-                    };
-                }
-                return null;
-            });
-            formsData = (await Promise.all(formsPromises)).filter(f => f !== null);
-        }
-    } catch (error) {
-        console.error('Error fetching forms data:', error);
-    }
-
-    try {
         const locationsRes = await fetch(`https://pokeapi.co/api/v2/pokemon/${pokemon.id}/encounters`);
         if (locationsRes.ok) {
             locationsData = await locationsRes.json();
@@ -357,13 +356,12 @@ async function fetchAdditionalData(pokemon) {
         console.error('Error fetching location data:', error);
     }
 
-    return [speciesData, habitatData, shapeData, formsData, locationsData];
+    return [speciesData, habitatData, shapeData, locationsData];
 }
 
-function updateTabContents(pokemon, speciesData, habitatData, shapeData, formsData, locationsData) {
+function updateTabContents(pokemon, speciesData, habitatData, shapeData, locationsData) {
     updateAboutTab(pokemon, speciesData);
     updateStatsTab(pokemon);
-    updateFormsTab(pokemon, formsData);
     updateLocationsTab(locationsData);
 }
 
@@ -490,86 +488,6 @@ function updateStatsTab(pokemon) {
     `;
 }
 
-function updateFormsTab(pokemon, formsData) {
-    if (formsData && formsData.length > 0) {
-        const hasMultipleForms = formsData.length > 1;
-        const formCategories = {};
-        
-        formsData.forEach(form => {
-            let category = 'Standard';
-            const formName = form.name.toLowerCase();
-            
-            if (formName.includes('alola')) category = 'Alolan';
-            else if (formName.includes('galar')) category = 'Galarian';
-            else if (formName.includes('hisui')) category = 'Hisuian';
-            else if (formName.includes('mega')) category = 'Mega';
-            else if (formName.includes('gmax') || formName.includes('gigantamax')) category = 'Gigantamax';
-            else if (!form.is_default) category = 'Other';
-            
-            if (!formCategories[category]) {
-                formCategories[category] = [];
-            }
-            formCategories[category].push(form);
-        });
-        
-        let formsNavHTML = '';
-        let formsGridHTML = '';
-        
-        if (hasMultipleForms && Object.keys(formCategories).length > 1) {
-            formsNavHTML = `
-                <div class="forms-nav">
-                    ${Object.keys(formCategories).map((category, index) => 
-                        `<button class="form-nav-item ${index === 0 ? 'active' : ''}" 
-                                data-category="${category}">${category} Forms</button>`
-                    ).join('')}
-                </div>
-            `;
-            
-            Object.keys(formCategories).forEach((category, index) => {
-                const categoryForms = formCategories[category];
-                formsGridHTML += `
-                    <div class="forms-grid ${index === 0 ? 'd-grid' : 'd-none'}" data-category="${category}">
-                        ${renderFormCards(categoryForms, pokemon)}
-                    </div>
-                `;
-            });
-        } else {
-            formsGridHTML = `
-                <div class="forms-grid d-grid">
-                    ${renderFormCards(formsData, pokemon)}
-                </div>
-            `;
-        }
-        
-        document.getElementById('forms-content').innerHTML = `
-            ${formsNavHTML}
-            ${formsGridHTML}
-        `;
-        
-        if (hasMultipleForms && Object.keys(formCategories).length > 1) {
-            document.querySelectorAll('.form-nav-item').forEach(button => {
-                button.addEventListener('click', function() {
-                    document.querySelectorAll('.form-nav-item').forEach(b => b.classList.remove('active'));
-                    document.querySelectorAll('.forms-grid').forEach(grid => grid.classList.remove('d-grid', 'd-none'));
-                    document.querySelectorAll('.forms-grid').forEach(grid => grid.classList.add('d-none'));
-                    
-                    this.classList.add('active');
-                    const category = this.getAttribute('data-category');
-                    document.querySelector(`.forms-grid[data-category="${category}"]`).classList.remove('d-none');
-                    document.querySelector(`.forms-grid[data-category="${category}"]`).classList.add('d-grid');
-                });
-            });
-        }
-    } else {
-        document.getElementById('forms-content').innerHTML = `
-            <div class="no-forms-message">
-                <i class="bi bi-card-image mb-3" style="font-size: 2rem;"></i>
-                <p>This Pokémon doesn't have any different forms.</p>
-            </div>
-        `;
-    }
-}
-
 function updateLocationsTab(locationsData) {
     let locationsHtml = '';
     
@@ -647,56 +565,6 @@ function updateLocationsTab(locationsData) {
             </div>
         `;
     }
-}
-
-function renderFormCards(forms, basePokemon) {
-    return forms.map(form => {
-        const formArtwork = 
-            form.sprites.other?.['official-artwork']?.front_default || 
-            form.sprites.front_default ||
-            'https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/0.png';
-        
-        const primaryType = form.types && form.types.length > 0 
-            ? form.types[0].type.name 
-            : 'normal';
-        
-        const formTypeBadges = form.types 
-            ? form.types.map(t => 
-                `<span class="type-badge type-${t.type.name}">${t.type.name}</span>`
-              ).join('') 
-            : '';
-        
-        let displayName = form.name.replace(/-/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
-        if (form.is_default) {
-            displayName = `Standard Form`;
-        } else {
-            const baseName = basePokemon.name.charAt(0).toUpperCase() + basePokemon.name.slice(1);
-            displayName = displayName.replace(baseName, '').trim();
-            if (!displayName) {
-                displayName = "Alternate Form";
-            }
-        }
-            
-        return `
-            <div class="form-card" data-form-type="${primaryType}">
-                <div class="form-card-header">
-                    <h5 class="form-name">${displayName}</h5>
-                </div>
-                <div class="form-card-body">
-                    <div class="form-image-container">
-                        <img src="${formArtwork}" alt="${form.name}" class="form-image">
-                    </div>
-                    <div class="form-types">
-                        <p class="form-type-label">Types:</p>
-                        ${formTypeBadges}
-                    </div>
-                    <div class="form-description">
-                        <p>${form.description || `A form of ${basePokemon.name.charAt(0).toUpperCase() + basePokemon.name.slice(1)}.`}</p>
-                    </div>
-                </div>
-            </div>
-        `;
-    }).join('');
 }
 
 function formatStatName(statName) {
