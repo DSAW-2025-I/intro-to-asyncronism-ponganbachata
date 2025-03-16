@@ -88,7 +88,10 @@
 body {
     background-size: 120px;
     font-family: 'Futura', sans-serif;
+    padding: 20px;
 }
+
+h1.display-4 { font-size: 2.5rem; }
 
 /* Root colors */
 :root {
@@ -158,20 +161,20 @@ body {
 .pokemon-card {
     position: relative;
     width: 100%;
-    padding-top: 25%; /* 1:1 Aspect Ratio */
+    padding-top: 25%;
     overflow: hidden;
-    border: 3px solid; /* Unified border style */
-    border-radius: 8px; /* Consistent border radius */
+    border: 3px solid;
+    border-radius: 8px;
     background-color: #fff;
     transition: transform 0.2s ease, box-shadow 0.2s ease;
     box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-    /* Remove background-blend-mode as we're not using gradients anymore */
 }
-
 
 .pokemon-card:hover {
     transform: translateY(-5px);
     box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+
+    .card-img-top { transform: scale(1.1); }
 }
 
 /* Sprite container */
@@ -557,93 +560,23 @@ h1, h2, h3 {
     font-style: italic;
 }
 
-/* Small screens (576px and up) */
-@media (min-width: 576px) {
-    body { padding: 20px; }
-    h1.display-4 { font-size: 2.5rem; }
-    .modal-dialog { 
-        margin: 1rem auto;
-        max-width: 500px;
-    }
-    .card-body { padding: 1rem; }
-    .pokemon-card { max-width: 100%; }
-}
-
-/* Medium screens (768px and up) */
-@media (min-width: 768px) {
-    h1.display-4 { font-size: 3rem; }
-    .card-title { font-size: var(--font-scale-5); }
-}
-
-/* Large screens (992px and up) */
-@media (min-width: 992px) {
-    .card-body { padding: 1.25rem; }
-}
-
 /* Mobile-specific styles (under 576px) */
 @media (max-width: 575.98px) {
-    .pokemon-card {
-        max-width: 100%;
-        margin-left: auto;
-        margin-right: auto;
-    }
-    
-    /* Tabs optimization */
-    #pokemonDetailsTabs .nav-link { padding: 0.75rem 0.25rem; }
-    #pokemonDetailsTabs .nav-link i { font-size: 1.25rem; }
-    .modal-body { padding: 1rem; }
     .nav-tabs {
         display: flex;
         flex-direction: column;
     }
-    .nav-tabs .nav-item { width: 100%; }
     .nav-tabs .nav-link {
         width: 100%;
         text-align: left;
-    }
-    h1.display-4 { font-size: 6vw; }
-    .nav-link, .btn {
-        min-height: 44px;
-        padding: 0.75rem;
-    }
-    
-    /* Location adjustments */
-    .region-header h5 { font-size: 1.1rem; }
-    .location-name { font-size: 0.9rem; }
-    .version-badge {
-        font-size: 0.7rem;
-        padding: 2px 8px;
     }
 }
 
 /* Tablet-specific styles (under 768px) */
 @media (max-width: 767.98px) {
-    body { line-height: 1.4; }
-    p { margin-bottom: 0.75rem; }
-    .card-title { font-size: var(--font-scale-4); }
-    
-    .version-tags { margin-top: 5px; }
-    
-    /* Tabs for mobile */
-    #pokemonDetailsTabs {
-        display: flex;
-        justify-content: space-between;
-    }
     #pokemonDetailsTabs .nav-item {
         flex: 1;
-        margin-right: 1px;
-    }
-    #pokemonDetailsTabs .nav-link {
-        padding: 0.6rem 0.5rem;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-    }
-    #pokemonDetailsTabs .nav-link i {
-        display: block;
-        margin-bottom: 0.25rem;
-    }
-    .modal-title { font-size: 1.25rem; }
+    } 
 }
 
 /* Small devices and down (under 992px) */
@@ -715,15 +648,6 @@ h1, h2, h3 {
     }
     .dropdown-menu a:hover {
         background-color: rgba(255, 255, 255, 0.2);
-    }
-}
-
-/* Feature-based media queries - keep separate as they serve different purposes */
-@media (hover: hover) {
-    .pokemon-card:hover .card-img-top { transform: scale(1.1); }
-    .pokemon-card:hover {
-        transform: translateY(-5px);
-        box-shadow: 0 10px 20px rgba(0, 0, 0, 0.15);
     }
 }
 
