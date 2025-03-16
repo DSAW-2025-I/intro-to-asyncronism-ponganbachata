@@ -13,6 +13,12 @@ document.getElementById('search-button').addEventListener('click', () => {
     }
 });
 
+document.querySelector('.navbar-brand').addEventListener('click', () => {
+    currentFetchType = 'initial';
+    offset = 0;
+    fetchInitialPokemon();
+});
+
 document.querySelectorAll('[data-gen]').forEach(item => {
     item.addEventListener('click', event => {
         const generation = event.target.getAttribute('data-gen');

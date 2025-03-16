@@ -173,6 +173,15 @@ body {
     box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
 }
 
+.navbar-brand {
+    border-radius: 10px;
+    padding: 10px;
+
+    &:hover {
+        background-color: rgba(0, 0, 0, 0.1);
+    }
+}
+
 /* Make type badges more prominent */
 .type-badge {
     display: inline-block;
