@@ -5,7 +5,8 @@ let currentFetchType = 'initial'; // Track the current fetch type
 let currentGeneration = ''; // Track the current generation
 let currentType = ''; // Track the current type
 
-document.getElementById('search-form').addEventListener('submit', () => {
+document.getElementById('search-form').addEventListener('submit', (event) => {
+    event.preventDefault();
     const searchInputElement = document.getElementById('pokemon-search');
     const searchInputValue = searchInputElement.value.trim().toLowerCase();
     if (searchInputValue) {
@@ -89,8 +90,8 @@ async function fetchInitialPokemon() {
 }
 
 function handleScroll() {
-    if ((window.innerHeight + window.scrollY) >= document.body.scrollHeight - 1 && currentFetchType != "search") {
-        console.log('Reached the bottom of the page!');
+    if ((window.innerHeight + window.scrollY) >= document.body.scrollHeight - 1 
+        && currentFetchType !== 'search') {
         offset += limit;
         if (currentFetchType === 'initial') {
             fetchInitialPokemon();
@@ -219,6 +220,8 @@ function getShapeBorderStyle(shape) {
     }
 }
 
+const shapeCache = new Map(); // Shape data cache
+
 async function displayPokemon(pokemonData) {
     const container = document.getElementById('pokemon-container');    
     container.innerHTML = ''; // Clear previous content if not appending
@@ -234,18 +237,26 @@ async function displayPokemon(pokemonData) {
         return;
     }
     
-    const shapePromises = pokemonData.map(pokemon => 
-        fetch(pokemon.species.url)
+    const shapePromises = pokemonData.map(pokemon => {
+        return fetch(pokemon.species.url)
             .then(res => res.ok ? res.json() : null)
             .then(species => {
                 if (species?.shape?.url) {
-                    return fetch(species.shape.url)
-                        .then(res => res.ok ? res.json() : null);
+                    if (!shapeCache.has(species.shape.url)) {
+                        return fetch(species.shape.url)
+                            .then(res => res.ok ? res.json() : null)
+                            .then(shapeData => {
+                                shapeCache.set(species.shape.url, shapeData);
+                                return shapeData;
+                            });
+                    } else {
+                        return shapeCache.get(species.shape.url);
+                    }
                 }
                 return null;
             })
-            .catch(() => null)
-    );
+            .catch(() => null);
+    });
     
     const shapeData = await Promise.all(shapePromises);
     
