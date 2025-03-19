@@ -1,9 +1,17 @@
 let offset = 0; // Initial offset for loading more Pokémon
 const limit = 18; // Number of Pokémon to load per request
 
+let currentPage = 1;
+let totalPages = 0;
+
 let currentFetchType = 'initial'; // Track the current fetch type
 let currentGeneration = ''; // Track the current generation
 let currentType = ''; // Track the current type
+
+document.addEventListener('DOMContentLoaded', () => {
+    fetchInitialPokemon();
+    updatePagination();
+});
 
 document.getElementById('search-form').addEventListener('submit', (event) => {
     event.preventDefault();
@@ -13,6 +21,7 @@ document.getElementById('search-form').addEventListener('submit', (event) => {
         currentFetchType = 'search';
         fetchPokemonData(searchInputValue);
         searchInputElement.value = '';
+        updatePagination();
         if (window.innerWidth < 992) { // Check if the screen width is less than 992px (Bootstrap's lg breakpoint)
             const navMenu = document.getElementById('navMenu');
             const bsCollapse = new bootstrap.Collapse(navMenu, {
@@ -21,6 +30,35 @@ document.getElementById('search-form').addEventListener('submit', (event) => {
             bsCollapse.hide();
         }
     }
+});
+
+document.querySelector('.navbar-brand').addEventListener('click', () => {
+    currentFetchType = 'initial';
+    offset = 0;
+    fetchInitialPokemon();
+    updatePagination();
+});
+
+document.querySelectorAll('[data-gen]').forEach(item => {
+    item.addEventListener('click', event => {
+        const generation = event.target.getAttribute('data-gen');
+        currentFetchType = 'generation';
+        currentGeneration = generation;
+        offset = 0;
+        fetchPokemonByGeneration(generation);
+        updatePagination();
+    });
+});
+
+document.querySelectorAll('[data-type]').forEach(item => {
+    item.addEventListener('click', event => {
+        const type = event.target.getAttribute('data-type');
+        currentFetchType = 'type';
+        currentType = type;
+        offset = 0;
+        fetchPokemonByType(type);
+        updatePagination();
+    });
 });
 
 document.querySelectorAll('.dropdown-item').forEach(item => {
@@ -35,36 +73,113 @@ document.querySelectorAll('.dropdown-item').forEach(item => {
     });
 });
 
-document.querySelector('.navbar-brand').addEventListener('click', () => {
-    currentFetchType = 'initial';
-    offset = 0;
-    fetchInitialPokemon();
-});
+function updatePagination() {
+    const pagination = document.getElementById('pagination');
+    pagination.innerHTML = ''; // Clear existing pagination buttons
 
-document.querySelectorAll('[data-gen]').forEach(item => {
-    item.addEventListener('click', event => {
-        const generation = event.target.getAttribute('data-gen');
-        currentFetchType = 'generation';
-        currentGeneration = generation;
-        offset = 0;
-        fetchPokemonByGeneration(generation);
+    if (totalPages <= 1) {
+        pagination.hidden = true;
+        return;
+    }
+
+    pagination.hidden = false;
+
+    const maxVisiblePages = 5;
+    const currentPage = Math.floor(offset / limit) + 1;
+
+    const prevLi = document.createElement('li');
+    prevLi.className = `page-item ${currentPage === 1 ? 'disabled' : ''}`;
+    prevLi.innerHTML = `<button class="page-link">&laquo;</button>`;
+    prevLi.addEventListener('click', () => {
+        if (currentPage > 1) {
+            offset -= limit;
+            fetchPageData();
+        }
     });
-});
 
-document.querySelectorAll('[data-type]').forEach(item => {
-    item.addEventListener('click', event => {
-        const type = event.target.getAttribute('data-type');
-        currentFetchType = 'type';
-        currentType = type;
-        offset = 0;
-        fetchPokemonByType(type);
+    pagination.appendChild(prevLi);
+    
+    let startPage = Math.max(1, currentPage - Math.floor(maxVisiblePages / 2));
+    let endPage = Math.min(totalPages, startPage + maxVisiblePages - 1);
+
+    // Adjust startPage if we're near the end
+    if (endPage - startPage + 1 < maxVisiblePages) {
+        startPage = Math.max(1, endPage - maxVisiblePages + 1);
+    }
+
+    if (startPage > 1) {
+        const firstPageLi = document.createElement('li');
+        firstPageLi.className = 'page-item';
+        firstPageLi.innerHTML = `<button class="page-link">1</button>`;
+        firstPageLi.addEventListener('click', () => {
+            offset = 0;
+            fetchPageData();
+        });
+        pagination.appendChild(firstPageLi);
+
+        if (startPage > 2) {
+            const dotsLi = document.createElement('li');
+            dotsLi.className = 'page-item disabled';
+            dotsLi.innerHTML = `<span class="page-link">...</span>`;
+            pagination.appendChild(dotsLi);
+        }
+    }
+
+    // Generate pagination buttons
+    for (let i = startPage; i <= endPage; i++) {
+        const li = document.createElement('li');
+        li.className = `page-item ${i === Math.floor(offset / limit) + 1 ? 'active' : ''}`;
+        
+        li.innerHTML = `<button class="page-link">${i}</button>`;
+        li.addEventListener('click', () => {
+            offset = (i - 1) * limit;
+            fetchPageData();
+        });
+        pagination.appendChild(li);
+    }
+
+    if (endPage < totalPages) {
+        if (endPage < totalPages - 1) {
+            const dotsLi = document.createElement('li');
+            dotsLi.className = 'page-item disabled';
+            dotsLi.innerHTML = `<span class="page-link">...</span>`;
+            pagination.appendChild(dotsLi);
+        }
+
+        const lastPageLi = document.createElement('li');
+        lastPageLi.className = 'page-item';
+        lastPageLi.innerHTML = `<button class="page-link">${totalPages}</button>`;
+        lastPageLi.addEventListener('click', () => {
+            offset = (totalPages - 1) * limit;
+            fetchPageData();
+        });
+        pagination.appendChild(lastPageLi);
+    }
+
+    // Add "Next" button
+    const nextLi = document.createElement('li');
+    nextLi.className = `page-item ${currentPage === totalPages ? 'disabled' : ''}`;
+    nextLi.innerHTML = `<button class="page-link">&raquo;</button>`;
+    nextLi.addEventListener('click', () => {
+        if (currentPage < totalPages) {
+            offset += limit;
+            fetchPageData();
+        }
     });
-});
+    pagination.appendChild(nextLi);
+}
 
-document.addEventListener('DOMContentLoaded', () => {
-    fetchInitialPokemon();
-    window.addEventListener('scroll', debounce(handleScroll, 200));
-});
+function fetchPageData() {
+    if (currentFetchType === 'initial') {
+        fetchInitialPokemon();
+    } else if (currentFetchType === 'generation') {
+        fetchPokemonByGeneration(currentGeneration);
+    } else if (currentFetchType === 'type') {
+        fetchPokemonByType(currentType);
+    }
+}
+
+
 
 async function fetchInitialPokemon() {
     showLoading();
@@ -75,6 +190,10 @@ async function fetchInitialPokemon() {
         }
         const data = await response.json();
         
+        const totalCount = data.count; // Total number of Pokémon
+        totalPages = Math.ceil(totalCount / limit); // Calculate total pages
+        updatePagination();
+
         const pokemonDetailPromises = data.results.map(async (pokemon) => {
             const detailResponse = await fetch(pokemon.url);
             return await detailResponse.json();
@@ -87,28 +206,6 @@ async function fetchInitialPokemon() {
     } finally {
         hideLoading();
     }
-}
-
-function handleScroll() {
-    if ((window.innerHeight + window.scrollY) >= document.body.scrollHeight - 1 
-        && currentFetchType !== 'search') {
-        offset += limit;
-        if (currentFetchType === 'initial') {
-            fetchInitialPokemon();
-        } else if (currentFetchType === 'generation') {
-            fetchPokemonByGeneration(currentGeneration);
-        } else if (currentFetchType === 'type') {
-            fetchPokemonByType(currentType);
-        }
-    }
-}
-
-function debounce(func, wait) {
-    let timeout;
-    return function(...args) {
-        clearTimeout(timeout);
-        timeout = setTimeout(() => func.apply(this, args), wait);
-    };
 }
 
 async function fetchPokemonData(pokemon) {
@@ -136,6 +233,10 @@ async function fetchPokemonByGeneration(generation) {
         }
         const data = await response.json();
         
+        const totalCount = data.pokemon_species.length; // Total Pokémon in this generation
+        totalPages = Math.ceil(totalCount / limit); // Calculate total pages
+        updatePagination();
+
         // Get first 20 Pokémon from this generation
         const pokemonList = data.pokemon_species.slice(offset, offset + limit).map(species => species.name);
         
@@ -163,6 +264,10 @@ async function fetchPokemonByType(type) {
         }
         const data = await response.json();
         
+        const totalCount = data.pokemon.length; // Total Pokémon in this generation
+        totalPages = Math.ceil(totalCount / limit); // Calculate total pages
+        updatePagination();
+
         // Get first 20 Pokémon of this type
         const pokemonList = data.pokemon.slice(offset, offset + limit).map(p => p.pokemon.name);
         

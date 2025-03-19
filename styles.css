@@ -677,6 +677,26 @@ h1, h2, h3 {
     }
 }
 
+.pagination-container {
+    margin-top: 20px;
+}
+
+.pagination .page-item.active .page-link {
+    background-color: var(--pokemon-red);
+    border-color: var(--pokemon-red);
+    color: white;
+}
+
+.pagination .page-link {
+    color: var(--pokemon-dark-gray);
+    border: 1px solid var(--pokemon-border-color);
+}
+
+.pagination .page-link:hover {
+    background-color: var(--pokemon-light-gray);
+    color: var(--pokemon-red);
+}
+
 @media (prefers-reduced-motion: reduce) {
     .pokemon-card { transition: none; }
 }
