@@ -7,11 +7,20 @@ let totalPages = 0;
 let currentFetchType = 'initial'; // Track the current fetch type
 let currentGeneration = ''; // Track the current generation
 let currentType = ''; // Track the current type
+let currentSearch = '';
 
 document.addEventListener('DOMContentLoaded', () => {
     fetchInitialPokemon();
     updatePagination();
 });
+
+document.querySelector('.navbar-brand').addEventListener('click', () => {
+    currentFetchType = 'initial';
+    offset = 0;
+    fetchInitialPokemon();
+    updatePagination();
+});
+
 
 document.getElementById('search-form').addEventListener('submit', (event) => {
     event.preventDefault();
@@ -19,6 +28,8 @@ document.getElementById('search-form').addEventListener('submit', (event) => {
     const searchInputValue = searchInputElement.value.trim().toLowerCase();
     if (searchInputValue) {
         currentFetchType = 'search';
+        currentSearch = searchInputValue;
+        offset = 0;
         fetchPokemonData(searchInputValue);
         searchInputElement.value = '';
         updatePagination();
@@ -30,13 +41,6 @@ document.getElementById('search-form').addEventListener('submit', (event) => {
             bsCollapse.hide();
         }
     }
-});
-
-document.querySelector('.navbar-brand').addEventListener('click', () => {
-    currentFetchType = 'initial';
-    offset = 0;
-    fetchInitialPokemon();
-    updatePagination();
 });
 
 document.querySelectorAll('[data-gen]').forEach(item => {
@@ -75,7 +79,7 @@ document.querySelectorAll('.dropdown-item').forEach(item => {
 
 function updatePagination() {
     const pagination = document.getElementById('pagination');
-    pagination.innerHTML = ''; // Clear existing pagination buttons
+    pagination.innerHTML = ''; 
 
     if (totalPages <= 1) {
         pagination.hidden = true;
@@ -102,7 +106,6 @@ function updatePagination() {
     let startPage = Math.max(1, currentPage - Math.floor(maxVisiblePages / 2));
     let endPage = Math.min(totalPages, startPage + maxVisiblePages - 1);
 
-    // Adjust startPage if we're near the end
     if (endPage - startPage + 1 < maxVisiblePages) {
         startPage = Math.max(1, endPage - maxVisiblePages + 1);
     }
@@ -125,7 +128,6 @@ function updatePagination() {
         }
     }
 
-    // Generate pagination buttons
     for (let i = startPage; i <= endPage; i++) {
         const li = document.createElement('li');
         li.className = `page-item ${i === Math.floor(offset / limit) + 1 ? 'active' : ''}`;
@@ -156,7 +158,7 @@ function updatePagination() {
         pagination.appendChild(lastPageLi);
     }
 
-    // Add "Next" button
+    //Boton de siguiente
     const nextLi = document.createElement('li');
     nextLi.className = `page-item ${currentPage === totalPages ? 'disabled' : ''}`;
     nextLi.innerHTML = `<button class="page-link">&raquo;</button>`;
@@ -176,10 +178,10 @@ function fetchPageData() {
         fetchPokemonByGeneration(currentGeneration);
     } else if (currentFetchType === 'type') {
         fetchPokemonByType(currentType);
+    } else if (currentFetchType === 'search') {
+        fetchPokemonData(currentSearch);
     }
 }
-
-
 
 async function fetchInitialPokemon() {
     showLoading();
@@ -190,8 +192,8 @@ async function fetchInitialPokemon() {
         }
         const data = await response.json();
         
-        const totalCount = data.count; // Total number of Pokémon
-        totalPages = Math.ceil(totalCount / limit); // Calculate total pages
+        const totalCount = data.count; 
+        totalPages = Math.ceil(totalCount / limit); 
         updatePagination();
 
         const pokemonDetailPromises = data.results.map(async (pokemon) => {
@@ -208,15 +210,37 @@ async function fetchInitialPokemon() {
     }
 }
 
-async function fetchPokemonData(pokemon) {
+async function fetchPokemonData(searchInputValue) {
     showLoading();
     try {
-        const response = await fetch(`https://pokeapi.co/api/v2/pokemon/${pokemon}`);
+        const response = await fetch(`https://pokeapi.co/api/v2/pokemon?limit=10000&offset=0`);
         if (!response.ok) {
             throw new Error('Network response was not ok ' + response.statusText);
         }
         const data = await response.json();
-        displayPokemon([data]);
+
+        // Filter Pokémon by search input
+        const filteredPokemon = data.results.filter(pokemon =>
+            pokemon.name.toLowerCase().includes(searchInputValue)
+        );
+
+        // Calculate total pages for pagination
+        const totalCount = filteredPokemon.length;
+        totalPages = Math.ceil(totalCount / limit);
+
+        // Paginate the filtered Pokémon
+        const paginatedPokemon = filteredPokemon.slice(offset, offset + limit);
+
+        updatePagination();
+
+        // Fetch details for the paginated Pokémon
+        const pokemonDetailPromises = paginatedPokemon.map(async (pokemon) => {
+            const detailResponse = await fetch(pokemon.url);
+            return await detailResponse.json();
+        });
+
+        const pokemonDetails = await Promise.all(pokemonDetailPromises);
+        displayPokemon(pokemonDetails);
     } catch (error) {
         showError('There has been a problem with your fetch operation: ' + error.message);
     } finally {
