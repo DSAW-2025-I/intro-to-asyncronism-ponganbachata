@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#e3350d">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <title>Pokédex</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.8.1/font/bootstrap-icons.css">
+</head>
+<body>
+    <header class="navbar navbar-expand-lg navbar-dark bg-danger">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="#">
+                <span class="pokeball-icon"></span>Pokédex
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navMenu" aria-controls="navMenu" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navMenu">
+                <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="generationsDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            Generations
+                        </a>
+                        <ul class="dropdown-menu" aria-labelledby="generationsDropdown">
+                            <li><a class="dropdown-item" href="#" data-gen="1">Generation I</a></li>
+                            <li><a class="dropdown-item" href="#" data-gen="2">Generation II</a></li>
+                            <li><a class="dropdown-item" href="#" data-gen="3">Generation III</a></li>
+                            <li><a class="dropdown-item" href="#" data-gen="4">Generation IV</a></li>
+                            <li><a class="dropdown-item" href="#" data-gen="5">Generation V</a></li>
+                            <li><a class="dropdown-item" href="#" data-gen="6">Generation VI</a></li>
+                            <li><a class="dropdown-item" href="#" data-gen="7">Generation VII</a></li>
+                            <li><a class="dropdown-item" href="#" data-gen="8">Generation VIII</a></li>
+                        </ul>
+                    </li>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="typesDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            Types
+                        </a>
+                        <ul class="dropdown-menu" aria-labelledby="typesDropdown">
+                            <li><a class="dropdown-item" href="#" data-type="normal">Normal</a></li>
+                            <li><a class="dropdown-item" href="#" data-type="fire">Fire</a></li>
+                            <li><a class="dropdown-item" href="#" data-type="water">Water</a></li>
+                            <li><a class="dropdown-item" href="#" data-type="grass">Grass</a></li>
+                            <li><a class="dropdown-item" href="#" data-type="electric">Electric</a></li>
+                            <li><a class="dropdown-item" href="#" data-type="ice">Ice</a></li>
+                            <li><a class="dropdown-item" href="#" data-type="fighting">Fighting</a></li>
+                            <li><a class="dropdown-item" href="#" data-type="poison">Poison</a></li>
+                            <li><a class="dropdown-item" href="#" data-type="ground">Ground</a></li>
+                            <li><a class="dropdown-item" href="#" data-type="flying">Flying</a></li>
+                            <li><a class="dropdown-item" href="#" data-type="psychic">Psychic</a></li>
+                            <li><a class="dropdown-item" href="#" data-type="bug">Bug</a></li>
+                            <li><a class="dropdown-item" href="#" data-type="rock">Rock</a></li>
+                            <li><a class="dropdown-item" href="#" data-type="ghost">Ghost</a></li>
+                            <li><a class="dropdown-item" href="#" data-type="dragon">Dragon</a></li>
+                            <li><a class="dropdown-item" href="#" data-type="dark">Dark</a></li>
+                            <li><a class="dropdown-item" href="#" data-type="steel">Steel</a></li>
+                            <li><a class="dropdown-item" href="#" data-type="fairy">Fairy</a></li>
+                        </ul>
+                    </li>
+                </ul>
+                <form class="d-flex" id="search-form">
+                    <input class="form-control me-2" type="text" id="pokemon-search" placeholder="Search by name" aria-label="Search">
+                    <button class="btn" type="submit" id="search-button" title="Search">
+                        <i class="bi bi-search"></i>
+                    </button>
+                </form>
+            </div>
+        </div>
+    </header>
+    <div class="container py-4">
+        <h1 class="display-4 mb-4">Pokémon Database</h1>
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="row" id="pokemon-container">
+                    <div class="col-12 text-center py-5">
+                        <output class="spinner-border loading-spinner text-primary">
+                            <span class="visually-hidden">Loading...</span>
+                        </output>
+                        <p class="mt-2">Loading Pokémon data...</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="pagination-container text-center mt-4">
+            <nav>
+                <ul class="pagination justify-content-center" id="pagination">
+                    <!-- Pagination buttons will be dynamically generated here -->
+                </ul>
+            </nav>
+        </div>
+    </div>
+    <div class="modal fade" id="pokemonModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-lg modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Pokémon Details</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body p-0">
+                    <ul class="nav nav-tabs" id="pokemonDetailsTabs" role="tablist">
+                        <li class="nav-item" role="presentation">
+                            <button class="nav-link active" id="about-tab" data-bs-toggle="tab" data-bs-target="#about-content">
+                                <i class="bi bi-info-circle d-block d-md-none"></i>
+                                <span class="d-none d-md-inline">About</span>
+                            </button>
+                        </li>
+                        <li class="nav-item" role="presentation">
+                            <button class="nav-link" id="stats-tab" data-bs-toggle="tab" data-bs-target="#stats-content">
+                                <i class="bi bi-bar-chart-fill d-block d-md-none"></i>
+                                <span class="d-none d-md-inline">Stats</span>
+                            </button>
+                        </li>
+                        <li class="nav-item" role="presentation">
+                            <button class="nav-link" id="locations-tab" data-bs-toggle="tab" data-bs-target="#locations-content">
+                                Locations
+                            </button>
+                        </li>
+                    </ul>
+                    <div class="tab-content">
+                        <div class="tab-pane fade show active p-3" id="about-content"></div>
+                        <div class="tab-pane fade p-3" id="stats-content">
+                            <div class="stats-container">
+                                <div class="stats-header">Stats</div>
+                                <div class="stats-body">
+                                    <div class="stat-row">
+                                        <div class="stat-label">HP</div>
+                                        <div class="stat-value">80</div>
+                                        <div class="stat-bar-container">
+                                            <div class="stat-bar hp" style="width: 31.37%;"></div>
+                                        </div>
+                                    </div>
+                                    <!-- Repeat for other stats -->
+                                    <div class="stat-average-indicator"></div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="tab-pane fade p-3" id="locations-content"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="script.js"></script>
+</body>
+</html>
